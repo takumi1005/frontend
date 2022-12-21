@@ -1,7 +1,24 @@
+import { gql } from "apollo-boost";
 import Link from "next/link";
 import { Card, CardBody, CardImg, CardTitle, Col, Row } from "reactstrap";
+import { useQuery } from "@apollo/react-hooks";
+
+const query = gql`
+	{
+		restaurants {
+			id
+			name
+			description
+			image {
+				url
+			}
+		}
+	}
+`;
 
 const RestaurantList = () => {
+	const { loading, error, data } = useQuery(query);
+	console.log(data);
 	return (
 		<Row>
 			<Col xs="6" sm="4">
