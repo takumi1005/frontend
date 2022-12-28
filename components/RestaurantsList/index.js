@@ -18,7 +18,8 @@ const query = gql`
 
 const RestaurantList = (props) => {
 	const { loading, error, data } = useQuery(query);
-	if (loading) return <h2>ロード中・・・</h2>;
+	if (error) return "レストランの読み込みに失敗しました";
+	if (loading) return <h2>読み込み中・・・</h2>;
 	if (data.restaurants && data.restaurants.length) {
 		const searchQuery = data.restaurants.filter((restaurant) =>
 			restaurant.name.toLowerCase().includes(props.search)
