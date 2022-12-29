@@ -42,7 +42,7 @@ class MyApp extends App {
 	// カートへ商品の追加
 	addItem = (item) => {
 		let { items } = this.state.cart;
-		const newItem = ites.find((i) => i.id === item.id);
+		const newItem = items.find((i) => i.id === item.id);
 		if (!newItem) {
 			item.quantity = 1;
 			// cartに追加する
@@ -80,7 +80,12 @@ class MyApp extends App {
 		const { Component, pageProps } = this.props;
 		return (
 			<AppContext.Provider
-				value={{ user: this.state.user, setUser: this.setUser }}
+				value={{
+					user: this.state.user,
+					cart: this.state.cart,
+					setUser: this.setUser,
+					addItem: this.addItem,
+				}}
 			>
 				<>
 					<Head>
