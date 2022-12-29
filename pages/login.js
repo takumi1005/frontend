@@ -10,12 +10,21 @@ import {
 	Row,
 } from "reactstrap";
 import AppContext from "../context/AppContext";
-import { registerUser } from "../lib/auth";
+import { login } from "../lib/auth";
 
 const Login = () => {
 	const appContext = useContext(AppContext);
 	const [data, setData] = useState({ identifier: "", password: "" });
-	const handleLogin = () => {};
+	const handleLogin = () => {
+		login(data.identifier, data.password)
+			.then((res) => {
+				appContext.setUser(res.data.user);
+			})
+			.catch((err) => console.log(err));
+	};
+	const handleChange = (e) => {
+		setData({ ...data, [e.target.name]: e.target.value });
+	};
 	return (
 		<Container>
 			<Row>
@@ -37,6 +46,7 @@ const Login = () => {
 											height: 50,
 											fontSize: "1.2rem",
 										}}
+										onChange={(e) => handleChange(e)}
 									/>
 								</FormGroup>
 								<FormGroup>
@@ -48,6 +58,7 @@ const Login = () => {
 											height: 50,
 											fontSize: "1.2rem",
 										}}
+										onChange={(e) => handleChange(e)}
 									/>
 								</FormGroup>
 								<span>
