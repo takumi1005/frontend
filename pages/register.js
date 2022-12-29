@@ -1,3 +1,4 @@
+import { useContext, useState } from "react";
 import {
 	Button,
 	Col,
@@ -8,8 +9,19 @@ import {
 	Label,
 	Row,
 } from "reactstrap";
+import AppContext from "../context/AppContext";
+import { registerUser } from "../lib/auth";
 
 const register = () => {
+	const appContext = useContext(AppContext);
+	const [data, setData] = useState({ username: "", email: "", password: "" });
+	const handleRegister = () => {
+		registerUser(data.username, data.email, data.password)
+			.then((res) => {
+				appContext.setUser(res.data.user);
+			})
+			.catch((err) => console.log(err));
+	};
 	return (
 		<Container>
 			<Row>
@@ -31,28 +43,46 @@ const register = () => {
 											height: 50,
 											fontSize: "1.2rem",
 										}}
+										onChange={(e) =>
+											setData({
+												...data,
+												username: e.target.value,
+											})
+										}
 									/>
 								</FormGroup>
 								<FormGroup>
 									<Label>メールアドレス：</Label>
 									<Input
 										type="email"
-										name="username"
+										name="email"
 										style={{
 											height: 50,
 											fontSize: "1.2rem",
 										}}
+										onChange={(e) =>
+											setData({
+												...data,
+												email: e.target.value,
+											})
+										}
 									/>
 								</FormGroup>
 								<FormGroup>
 									<Label>パスワード：</Label>
 									<Input
 										type="password"
-										name="username"
+										name="password"
 										style={{
 											height: 50,
 											fontSize: "1.2rem",
 										}}
+										onChange={(e) =>
+											setData({
+												...data,
+												password: e.target.value,
+											})
+										}
 									/>
 								</FormGroup>
 								<span>
@@ -65,6 +95,9 @@ const register = () => {
 								<Button
 									style={{ float: "right", width: 120 }}
 									color="primary"
+									onClick={() => {
+										handleRegister();
+									}}
 								>
 									登録
 								</Button>
