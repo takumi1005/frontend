@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import App from "next/app";
 import Head from "next/head";
 import React from "react";
@@ -15,6 +16,28 @@ class MyApp extends App {
 	setUser = (user) => {
 		this.setState({ user });
 	};
+
+	// すでにユーザーのクッキー情報が残っているかを確認する
+	componentDidMount() {
+		const token = Cookies.get("token"); // tokenの中にjwtが入っている
+
+		if (token) {
+			fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}).then(async (res) => {
+				if (!res.ok) {
+					Cookies.remove("token");
+					this.setState({ users: null });
+					return null;
+				}
+				const user = await res.json();
+				this.setUser(user);
+			});
+		}
+	}
+
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
