@@ -1,7 +1,50 @@
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import Cookies from "js-cookie";
+import { useContext, useState } from "react";
 import { FormGroup, Input, Label } from "reactstrap";
+import AppContext from "../../context/AppContext";
 import CardSection from "./CardSection";
 
 const CheckOutForm = () => {
+	const [data, setData] = useState({
+		address: "",
+		stripe_id: "",
+	});
+
+	const elements = useElements();
+	const stripe = useStripe();
+
+	const handleChange = (e) => {
+		const updateItem = (data[e.target.name] = e.target.value);
+		setData({ ...data, updateItem });
+	};
+
+	const appContext = useContext(AppContext);
+	//注文を確定させる関数
+	const userToken = Cookies.get("token");
+	const submitOrder = async () => {
+		const cardElement = elements.getElement(CardElement);
+		const token = await stripe.createToken(cardElement);
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/orders`,
+			{
+				method: "POST",
+				headers: userToken && { Authorization: `Bearer ${userToken}` },
+				body: JSON.stringify({
+					amount: Number(appContext.cart.total),
+					dishes: appContext.cart.items,
+					address: data.address,
+					token: token.token.id,
+				}),
+			}
+		);
+		if (response.ok) {
+			console.log("注文に成功しました");
+		} else {
+			console.log("注文に失敗しました");
+		}
+	};
+
 	return (
 		<div className="paper">
 			<h5>あなたの情報</h5>
@@ -9,10 +52,10 @@ const CheckOutForm = () => {
 			<FormGroup>
 				<div>
 					<Label>住所</Label>
-					<Input name="address" />
+					<Input name="address" onChange={(e) => handleChange(e)} />
 				</div>
 			</FormGroup>
-			<CardSection />
+			<CardSection submitOrder={submitOrder} />
 			<style jsx global>
 				{`
 					.paper {
