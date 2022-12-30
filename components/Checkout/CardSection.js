@@ -16,6 +16,12 @@ const CardSection = (props) => {
 									注文を確認
 								</button>
 							</div>
+							{props.errorMsg ? (
+								<div>{props.errorMsg}</div>
+							) : null}
+							{props.successMsg ? (
+								<div>{props.successMsg}</div>
+							) : null}
 						</div>
 					</fieldset>
 				</div>

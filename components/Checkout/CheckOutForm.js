@@ -11,6 +11,9 @@ const CheckOutForm = () => {
 		stripe_id: "",
 	});
 
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
+
 	const elements = useElements();
 	const stripe = useStripe();
 
@@ -39,9 +42,9 @@ const CheckOutForm = () => {
 			}
 		);
 		if (response.ok) {
-			console.log("注文に成功しました");
+			setSuccess("注文に成功しました");
 		} else {
-			console.log("注文に失敗しました");
+			setError("注文に失敗しました");
 		}
 	};
 
@@ -55,7 +58,11 @@ const CheckOutForm = () => {
 					<Input name="address" onChange={(e) => handleChange(e)} />
 				</div>
 			</FormGroup>
-			<CardSection submitOrder={submitOrder} />
+			<CardSection
+				submitOrder={submitOrder}
+				errorMsg={error}
+				successMsg={success}
+			/>
 			<style jsx global>
 				{`
 					.paper {
