@@ -32,6 +32,7 @@ const Cart = () => {
 											<div
 												className="items-one"
 												style={{ marginBottom: 15 }}
+												key={item.id}
 											>
 												<div>
 													<span id="item-price">
